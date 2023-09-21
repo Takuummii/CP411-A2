@@ -37,7 +37,7 @@ void init(void) {
 	glutInitDisplayMode(GLUT_DOUBLE);  // GLUT_DOUBLE for double frame buffer
 	glutInitWindowPosition(100, 100);
 	glutInitWindowSize(winWidth, winHeight);
-	glutCreateWindow("SimpleDraw (your name)");
+	glutCreateWindow("SimpleDraw Jethsuda Chaisavang");
 	glClearColor(1.0, 1.0, 1.0, 0.0); // Set display-window color to white
 	glMatrixMode(GL_PROJECTION);
 	gluOrtho2D(0.0, winWidth, winHeight, 0.0); // set top left as origin
@@ -104,6 +104,18 @@ void mouseActionFcn(GLint button, GLint action, GLint xMouse, GLint yMouse) {
 
 				// create a new shape object, copy the tempObj values to the new object,
 				// and the new object to the object list
+				SHAPE newshape;
+				newshape.type = tempObj.type;
+				newshape.fr = tempObj.fr;
+				newshape.fg = tempObj.fg;
+				newshape.fb = tempObj.fb;
+				newshape.sr = tempObj.sr;
+				newshape.sg = tempObj.sg;
+				newshape.sb = tempObj.sb;
+				newshape.swidth = tempObj.swidth;
+				newshape.x1 = tempObj.x1;
+				newshape.y1 = tempObj.y1;
+				insert(&objlist,&newshape);
 
 			}
 		}
@@ -148,7 +160,26 @@ void mouseActionFcn(GLint button, GLint action, GLint xMouse, GLint yMouse) {
 void mouseMotionFcn(GLint xMouse, GLint yMouse) {
 	// in drawing mode, use xMouse and yMouse value to update the tempObj
 	// in edit move mode, use (xbegin, ybegin) and (xMouse, yMouse) to update the selected object
-
+	if (isInDraw == 1) {
+			select(xMouse,yMouse);
+			xbegin = xMouse;
+			ybegin = yMouse;
+		}
+	else {
+		tempObj.x1 = xMouse;
+		tempObj.x2 = xMouse;
+		tempObj.y1 = yMouse;
+		tempObj.y2 = yMouse;
+		tempObj.fb = fillblue;
+		tempObj.fg = fillgreen;
+		tempObj.fr = fillred;
+		tempObj.sb = sblue;
+		tempObj.sg = sgreen;
+		tempObj.sr = sred;
+		tempObj.swidth = strokeWidth;
+		tempObj.type = objType;
+		insert(&objlist,&tempObj);
+	}
 	glutPostRedisplay();
 	glFlush();
 }
