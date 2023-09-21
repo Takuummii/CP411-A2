@@ -9,6 +9,7 @@
 #include "object.hpp"
 #include "edit.hpp"
 #include "file.hpp"
+#include <stdio.h>
 
 extern LIST objlist;
 extern GLsizei winHeight, winWidth;
@@ -16,6 +17,7 @@ extern GLint oprMode, isInMenu, objType, isInMove;
 extern NODE *selectNode;
 extern GLint strokeWidth;
 extern GLfloat fillred, fillgreen, fillblue, sred, sgreen, sblue;
+int option = 0;
 
 void addMenu() {
 
@@ -75,6 +77,9 @@ void addMenu() {
 
 void clear() {
 // ...
+	clearList(&objlist);
+
+
 }
 
 void mainMenuFcn(GLint menuOption) {
@@ -97,13 +102,42 @@ void drawMenuFcn(GLint typeOption) {
 }
 
 void fileMenuFcn(GLint fileOption) {
-// ..
+// 1 = save, 2 = open, 3 = export
+	switch(fileOption) {
+		case 1: {saveSVG("output.svg",winWidth,winHeight);}
+				break;
+		case 2: {openSVG("output.svg");}
+				break;
+		case 3: {saveBitmap("output.bmp",0,0,winWidth,winHeight);}
+				break;
+	}
 }
 
 void editMenuFcn(GLint editOption) {
 	oprMode = 1;
 	isInMove = 0;
-	// ...
+	// 1 = select 2 = delete 3 = move front 4 = move back 5 = move around
+	switch(editOption) {
+	case 1: {selectNode = 0;}
+			break;
+	case 2: {if (selectNode) {
+					//deleteNode(*objlist,*selectNode);
+				}
+			 }
+			break;
+	case 3: {if (selectNode) {
+					moveFront(selectNode);
+				}
+			}
+			break;
+	case 4: {if (selectNode) {
+					moveBack(selectNode);
+				}
+			}
+			break;
+	case 5: {selectNode = 0; isInMove = 1;}
+			break;
+	}
 	glutPostRedisplay();
 }
 
@@ -111,14 +145,44 @@ void styleSubMenu(GLint styleOption) {
 }
 
 void fillColorMenuFcn(GLint colorOption) {
-// ...
+// 1 = red, 2 = green, 3 = blue, 4 = black, 5 = white
+	option = 0;
+	switch(colorOption) {
+	case 1: {fillred = 1.0; fillgreen = 0.0; fillblue = 0.0;}
+				break;
+	case 2: {fillred = 0.0; fillgreen = 1.0; fillblue = 0.0;}
+				break;
+	case 3: {fillred = 0.0; fillgreen = 0.0; fillblue = 1.0;}
+				break;
+	case 4: {fillred = 0.0; fillgreen = 0.0; fillblue = 0.0;}
+				break;
+	case 5: {fillred = 1.0; fillgreen = 1.0; fillblue = 1.0;}
+			break;
+	}
+	glutPostRedisplay();
 }
 
 void strokeColorMenuFcn(GLint colorOption) {
-// ...
+// RGBBW
+	option = 0;
+	switch(colorOption) {
+	case 1: {sred = 1.0; sgreen = 0.0; sblue = 0.0;}
+			break;
+	case 2: {sred = 0.0; sgreen = 1.0; sblue = 0.0; option = 1;}
+			break;
+	case 3: {sred = 0.0; sgreen = 0.0; sblue = 1.0; option = 1;}
+			break;
+	case 4: {sred = 0.0; sgreen = 0.0; sblue = 0.0; option = 1;}
+			break;
+	case 5: {sred = 1.0; sgreen = 1.0; sblue = 1.0; option = 1;}
+			break;
+	}
+	glutPostRedisplay();
 }
 
 void strokeWidthMenuFcn(GLint width) {
-// ....
+// 1,2,3,4,5
+	strokeWidth = width;
+	glutPostRedisplay();
 }
 
